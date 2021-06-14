@@ -1,9 +1,13 @@
+import os
 import time
 import torch
 import random
 import datetime
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 from typing import List
 from logging import INFO
@@ -21,6 +25,7 @@ class FineTuner():
             self,
             sentences: List[str], 
             labels: List[int],
+            output_dir='model',
             model='bert-base-uncased',
             num_labels=2,
             epochs=4, 
@@ -37,6 +42,8 @@ class FineTuner():
             sentences: list if N sentences
 
             labels: list of N labels
+
+            output_dir: string which specifies desired model output directory relative to the root
 
             model: string which determines the huggingface transformer model that 
             should be finetuned. The default is the 12-layer standard BERT model.
@@ -64,6 +71,12 @@ class FineTuner():
 
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        self.output_dir = f'{dir_path}/../{output_dir}'
+        # Create output directory if needed
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
+
         # Load BertForSequenceClassification, the pretrained BERT model 
         # with a single linear classification layer on top. 
         self.model = BertForSequenceClassification.from_pretrained(
@@ -78,8 +91,8 @@ class FineTuner():
 
         self.optimizer = AdamW(
             self.model.parameters(),
-            lr = 5e-5,
-            eps = 1e-8
+            lr=5e-5,
+            eps=1e-8
         )
 
 
@@ -151,6 +164,23 @@ class FineTuner():
     
         elapsed_rounded = int(round((elapsed)))
         return str(datetime.timedelta(seconds=elapsed_rounded))
+
+    @staticmethod
+    def save_plot(loss_values):
+        ''' saves loss list as a seaborn plot to the cwd '''
+        sns.set(style='darkgrid')
+        sns.set(font_scale=1.5)
+        plt.rcParams["figure.figsize"] = (12,6)
+
+        # Plot the learning curve.
+        plt.plot(loss_values, 'b-o')
+
+        # Label the plot.
+        plt.title("Training Loss")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+
+        plt.savefig('loss.png')
 
     def tokenize(self, sentences: List[str]):
         """ Tokenizes all sentences and maps the tokens to thier word IDs
@@ -346,11 +376,20 @@ class FineTuner():
                 nb_eval_steps += 1
 
             # report final accuracy for validation run
-            logger.info("  Accuracy: {0:.2f}".format(eval_accuracy/nb_eval_steps))
+            logger.info("  Accuracy: {0:.2f}".format(eval_accuracy / nb_eval_steps))
             logger.info("  Validation took: {:}".format(self.format_time(time.time() - t0)))
 
-            logger.info("Training complete!")
+            logger.info("Saving model to %s" % self.output_dir)
+            model_to_save = self.model.module if hasattr(self.model, 'module') else self.model
+            model_to_save.save_pretrained(self.output_dir)
+            self.tokenizer.save_pretrained(self.output_dir)
 
+            logger.info("Plotting and saving loss values ...")
+            # Good practice: save your training arguments together with the trained model
+            # torch.save(args, os.path.join(output_dir, 'training_args.bin'))
+            self.save_plot(loss_values)
+
+            logger.info("Training complete!")
 
 if __name__== '__main__':
     df = pd.read_csv(
