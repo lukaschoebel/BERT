@@ -3,7 +3,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Fundamentals & Notes](#fundamentals--notes)
 - [Links](#links)
   - [Scientific Papers](#scientific-papers)
@@ -32,6 +31,7 @@
 ### Scientific Papers
 
 - [BERT](https://arxiv.org/pdf/1810.04805.pdf) by Devlin et. Al.
+- [Attention Is All You Need](https://papers.nips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf) by Vaswani et. Al.
 
 ### GitHub Repositories
 
