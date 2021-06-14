@@ -1,0 +1,5 @@
+wget
+torch
+pandas
+sklearn
+transformers
