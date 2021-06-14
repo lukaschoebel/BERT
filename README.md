@@ -15,7 +15,7 @@
 
 - **BERT**
   - possibility for transfer learning and benefit from pre-trained model
-  - _Transfer Learning_ fast prototyping, requires less data, outperforming classical methods
+  - _Transfer Learning_: fast prototyping, requires less data, outperforming classical methods
   - made out of transformers without recurrence (RNNs) and has its own tokenizer as well as a fixed vocabulary with 30k tokens
   - common misspellings are not included in the vocab since it it is pre-trained on Wikipedia & Book Corpus
   - breaks down unknown words into subword tokens; subword tokens start with two hashtags except the first subtoken
@@ -24,7 +24,8 @@
   - _distillation_ (removing of parameters while trying to keep accuracy) is workaround for slow inference
   - trained on _Masked Language_ and _Next Sentence Prediction_ tasks
   - self attention: _"looking at other words in the input sentence while encoding a specific word"_
-    - calculate three vectors from each of the input vectors --> Query, Key, Value
+    - calculate three vectors for each of the input vectors --> Query, Key, Value
+    - calculate score by taking dot product of query vector $q$
   - applicable: classification, NER, POS-tagging or QnA
   - not applicable: language model, text generation, machine translation
 - **Transformer**
