@@ -25,7 +25,7 @@
   - trained on _Masked Language_ and _Next Sentence Prediction_ tasks
   - self attention: _"looking at other words in the input sentence while encoding a specific word"_
     - calculate three vectors for each of the input vectors --> Query, Key, Value
-    - calculate score by taking dot product of query vector $q$
+    - calculate score by taking dot product of query vector \\(q)\\
   - applicable: classification, NER, POS-tagging or QnA
   - not applicable: language model, text generation, machine translation
 - **Transformer**
