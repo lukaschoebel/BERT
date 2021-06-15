@@ -201,7 +201,7 @@ class FineTuner():
         
         return input_ids
 
-    def get_data_loader(self):
+    def get_data_loader(self, mode={'train', 'test'}):
         """ Provides training and validation dataloader for training loop.
         These torch dataloaders care for the batching and yield subbatches 
         of the dataset to meet memory requirements.
@@ -392,15 +392,25 @@ class FineTuner():
             logger.info("Training complete!")
 
 if __name__== '__main__':
-    df = pd.read_csv(
+    train_df = pd.read_csv(
         "../data/cola_public/raw/in_domain_train.tsv", 
         delimiter='\t', 
         header=None, 
         names=['sentence_source', 'label', 'label_notes', 'sentence']
     )
 
-    sentences = df.sentence.values
-    labels = df.label.values
+    sentences = train_df.sentence.values
+    labels = train_df.label.values
 
     f = FineTuner(sentences, labels)
     f.train()
+
+    test_df = pd.read_csv(
+        "./cola_public/raw/out_of_domain_dev.tsv", 
+        delimiter='\t', 
+        header=None, 
+        names=['sentence_source', 'label', 'label_notes', 'sentence']
+    )
+
+    sentences = test_df.sentence.values
+    labels = test_df.label.values
