@@ -6,6 +6,7 @@ Collection of scripts and notes regarding the _Bidirectional Encoder Representat
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Fundamentals & Notes](#fundamentals--notes)
+- [Get Started](#get-started)
 - [Links](#links)
   - [Scientific Papers](#scientific-papers)
   - [GitHub Repositories](#github-repositories)
@@ -19,6 +20,7 @@ Collection of scripts and notes regarding the _Bidirectional Encoder Representat
   - 6 Encoder + 6 Decoder <-> BERT: 12 x Encoder
   - 8 attention heads (MHA) randomly initialized with length 64 --> 512d embeddings
   - designed with the goal of machine translation in mind
+  - incorporates positional encoding for attention with hardcoded hyperbolic functions
 - **BERT** by Devlin et. Al.
   - possibility for transfer learning and benefit from pre-trained model
   - _Transfer Learning_: fast prototyping, requires less data, outperforming classical methods
@@ -37,12 +39,17 @@ Collection of scripts and notes regarding the _Bidirectional Encoder Representat
     - calculate three vectors for each of the input vectors --> Query, Key, Value
     - calculate score by taking dot product of query vector q and key vector k of every input vector of the sentence
     - divide score by sqrt of d_k in order to obtain stable gradients & compute softmax
+    - reminder: attention is O(n^2) in complexity with sequences of length n --> long sentences are very expensive
   - _Multi-headed Attention_
     - expands model's focus abilities on different positions
     - provides multiple 'representation subspaces'
   - 12 attention heads with length 64 --> 768d embeddings: one BERT token (word embedding) has 768 features
-  - includes _positional encoding_ to incorporate the relative position as a feature for attention
-  - _Layers_:
+  - BERT embedding consists out of the sum of three different _embedding types_:
+    - _Positional Encoding_ to incorporate the relative position as a feature for attention;
+      these positional embeddings are learned and not hardcoded with hyperbolic functions as in the transformer architecture
+    - _Segment Embedding_ which differentiates the sentences/segments from each other
+    - _Vocab Embedding_ which correlates to the embedding of a given token (--> sub/word)
+  - _Layer Types_:
     1. Self-Attention Layers
     2. Attention Output Layers (768 Neurons)
     3. Indermediate / Dense Layers (3072 Neurons / 2.4M Weights)
